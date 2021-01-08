@@ -28,12 +28,12 @@
 
                 <!-- Current Profile Photo -->
                 <div class="mt-2" x-show="! photoPreview">
-                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="rounded-full h-20 w-20 object-cover">
+                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="object-cover w-20 h-20 rounded-full">
                 </div>
 
                 <!-- New Profile Photo Preview -->
                 <div class="mt-2" x-show="photoPreview">
-                    <span class="block rounded-full w-20 h-20"
+                    <span class="block w-20 h-20 rounded-full"
                           x-bind:style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'">
                     </span>
                 </div>
@@ -50,19 +50,59 @@
 
                 <x-jet-input-error for="photo" class="mt-2" />
             </div>
+            <div x-data="{bannerName: null, bannerPreview: null}" class="col-span-6 sm:col-span-4">
+                <!-- Profile Banner File Input -->
+                <input type="file" class="hidden"
+                            wire:model="banner"
+                            x-ref="banner"
+                            x-on:change="
+                                    bannerName = $refs.banner.files[0].name;
+                                    const reader = new FileReader();
+                                    reader.onload = (e) => {
+                                        bannerPreview = e.target.result;
+                                    };
+                                    reader.readAsDataURL($refs.banner.files[0]);
+                            " />
+
+                <x-jet-label for="banner" value="{{ __('Banner') }}" />
+
+                <!-- Current Profile Banner -->
+                <div class="mt-2" x-show="! bannerPreview">
+                    <img src="{{ $this->user->profile_banner_url }}" alt="{{ $this->user->name }}" class="object-cover w-20 h-20 rounded-full">
+                </div>
+
+                <!-- New Profile Banner Preview -->
+                <div class="mt-2" x-show="bannerPreview">
+                    <span class="block w-20 h-20 rounded-full"
+                          x-bind:style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + bannerPreview + '\');'">
+                    </span>
+                </div>
+
+                <x-jet-secondary-button class="mt-2 mr-2" type="button" x-on:click.prevent="$refs.banner.click()">
+                    {{ __('Select A New Banner') }}
+                </x-jet-secondary-button>
+
+                @if ($this->user->profile_banner_path)
+                    <x-jet-secondary-button type="button" class="mt-2" wire:click="deleteProfileBanner">
+                        {{ __('Remove Banner') }}
+                    </x-jet-secondary-button>
+                @endif
+
+                <x-jet-input-error for="banner" class="mt-2" />
+            </div>
         @endif
 
         <!-- Name -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="name" value="{{ __('Name') }}" />
-            <x-jet-input id="name" type="text" class="mt-1 block w-full" wire:model.defer="state.name" autocomplete="name" />
+            <x-jet-input id="name" type="text" class="block w-full mt-1" wire:model.defer="state.name" autocomplete="name" />
             <x-jet-input-error for="name" class="mt-2" />
         </div>
 
         <!-- Email -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="email" value="{{ __('Email') }}" />
-            <x-jet-input id="email" type="email" class="mt-1 block w-full" wire:model.defer="state.email" />
+            <x-jet-input id="email" type="email" class="block w-full mt-1" wire:model.defer="state.email" />
             <x-jet-input-error for="email" class="mt-2" />
         </div>
     </x-slot>

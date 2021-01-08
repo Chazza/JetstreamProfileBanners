@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasProfileBanner;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,6 +16,7 @@ class User extends Authenticatable
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
+    use HasProfileBanner;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -57,5 +59,6 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'profile_banner_url',
     ];
 }
